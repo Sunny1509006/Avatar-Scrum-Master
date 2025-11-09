@@ -1,0 +1,114 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*.tmp
+*.orig
+*.rej
+*~
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+.pytest_cache/
+.coverage
+coverage.xml
+
+# Backend environment files (keep examples tracked)
+backend/.env
+!backend/.env.example
+
+# Backend runtime data (RAG, transcripts, temp)
+backend/data/index.json
+backend/data/docs/
+backend/data/transcripts/
+backend/data/tmp/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+
+# Website-specific
+website/node_modules/
+website/dist/
+website/.vite/
+website/.cache/
+website/.env
+website/.env.*
+!website/.env.example
+website/.vercel/
+
+# Vercel
+.vercel/
+
+# Misc caches
+.cache/
+
+# Allow lock files (tracked)
+!package-lock.json
+!bun.lockb
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.code-workspace
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+build/
+dist/
+.eggs/
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Backend env and runtime data
+backend/.env
+website/.env
+backend/data/docs/
+backend/data/transcripts/
+backend/data/index.json
+backend/KMS/logs/
+backend/__pycache__/
+backend/mcp_client/__pycache__/
+
+# Node / Frontend
+node_modules/
+website/node_modules/
+website/dist/
+website/dist-ssr/
+website/.vite/
+website/*.local
+website/.eslintcache
+
+# Vercel
+.vercel/
+website/.vercel/
+
+# Logs
+logs/
+*.log
