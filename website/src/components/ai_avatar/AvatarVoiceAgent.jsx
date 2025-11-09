@@ -45,7 +45,8 @@ const AvatarVoiceAgent = () => {
 
   // Push new transcription segments to the backend for persistent logging
   useEffect(() => {
-    const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "http://localhost:5001";
+    const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "http://137.184.129.34:5001";
+    // const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "http://localhost:5001";
     const roomName = room?.name || "unknown-room";
     const newKeys = new Set(sentKeys);
     const toSend = [];
