@@ -34,7 +34,7 @@ const LiveKitWidget = ({ setShowSupport }) => {
       <div className="support-room">
         {isConnecting ? (
           <div className="connecting-status">
-            <h2>Connecting to support...</h2>
+            <h2>Initiating the call...</h2>
             <button
               type="button"
               className="cancel-button"
@@ -48,6 +48,12 @@ const LiveKitWidget = ({ setShowSupport }) => {
             serverUrl={import.meta.env.VITE_LIVEKIT_URL}
             token={token}
             connect={true}
+            connectOptions={{
+              // Many US corporate/VPN networks block UDP; force TURN relay
+              rtcConfig: { iceTransportPolicy: "relay" },
+              // Some LiveKit client builds expect rtcConfiguration
+              rtcConfiguration: { iceTransportPolicy: "relay" },
+            }}
             video={false}
             audio={true}
             onDisconnected={() => {

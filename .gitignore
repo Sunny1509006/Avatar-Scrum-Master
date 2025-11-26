@@ -112,3 +112,6 @@ website/.vercel/
 # Logs
 logs/
 *.log
+
+
+backend/data/

@@ -21,7 +21,8 @@ class Assistant(Agent):
 async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
         llm=openai.realtime.RealtimeModel(
-            voice=os.getenv("OPENAI_VOICE", "alloy"),
+            voice=os.getenv("OPENAI_VOICE", "onyx"),
+            api_key=os.getenv("OPENAI_API_KEY")  # 👈 add this line
         )
     )
 

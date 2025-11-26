@@ -7,7 +7,7 @@ import {
   useRoomContext,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTracks, VideoTrack } from '@livekit/components-react';
 import "./AvatarVoiceAgent.css";
 
@@ -29,11 +29,20 @@ const AvatarVoiceAgent = () => {
     source: Track.Source.Microphone,
     participant: localParticipant.localParticipant,
   });
-  const trackRefs = useTracks([Track.Source.Camera]);
-  const localCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name = 'admin');
+  // Include camera and unknown sources to catch custom video publishers
+  const trackRefs = useTracks([Track.Source.Camera, Track.Source.Unknown]);
+  // Prefer any non-local (remote) video track; fall back to matching agent identity/name
+  const agentVideoTrackRef =
+    trackRefs.find((tr) => tr?.participant && !tr.participant.isLocal) ||
+    trackRefs.find(
+      (tr) =>
+        tr?.participant?.identity === "agent" ||
+        tr?.participant?.name === "agent"
+    );
 
   const [messages, setMessages] = useState([]);
-  const [sentKeys, setSentKeys] = useState(new Set());
+  // Track which transcription segments have been sent already without causing re-renders
+  const sentKeysRef = useRef(new Set());
 
   useEffect(() => {
     const allMessages = [
@@ -45,35 +54,38 @@ const AvatarVoiceAgent = () => {
 
   // Push new transcription segments to the backend for persistent logging
   useEffect(() => {
-    const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "http://137.184.129.34:5001";
-    // const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "http://localhost:5001";
+    const backendUrl = (import.meta.env?.VITE_BACKEND_URL) || "/api";
     const roomName = room?.name || "unknown-room";
-    const newKeys = new Set(sentKeys);
     const toSend = [];
+
     for (const m of messages) {
       const key = `${m.type}:${m.firstReceivedTime}`;
-      if (!newKeys.has(key)) {
-        newKeys.add(key);
+      if (!sentKeysRef.current.has(key)) {
+        sentKeysRef.current.add(key);
         toSend.push({
           room: roomName,
           type: m.type,
           text: m.text || m.alternatives?.[0]?.text || "",
           ts: m.firstReceivedTime,
-          participant: m.participantIdentity || (m.type === "user" ? localParticipant?.localParticipant?.identity : "agent"),
+          participant:
+            m.participantIdentity ||
+            (m.type === "user"
+              ? localParticipant?.localParticipant?.identity
+              : "agent"),
         });
       }
     }
-    setSentKeys(newKeys);
+
     if (toSend.length > 0) {
       for (const payload of toSend) {
         fetch(`${backendUrl}/transcriptions`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }).catch(() => {});
+        }).catch(() => { });
       }
     }
-  }, [messages, room, localParticipant, sentKeys]);
+  }, [messages, room, localParticipant]);
 
   return (
     <div className="voice-assistant-container">
@@ -81,7 +93,11 @@ const AvatarVoiceAgent = () => {
         <BarVisualizer state={state} barCount={5} trackRef={audioTrack} />
       </div>
       <>
-      {localCamTrackRef ? <VideoTrack trackRef={localCamTrackRef} /> : <div>Calling the Concierce...</div>}
+        {agentVideoTrackRef ? (
+          <VideoTrack trackRef={agentVideoTrackRef} />
+        ) : (
+          <div>Calling your Scrum Master...</div>
+        )}
       </>
       <div className="control-section">
         <VoiceAssistantControlBar />

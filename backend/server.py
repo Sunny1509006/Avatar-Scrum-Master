@@ -123,6 +123,78 @@ def upload_doc():
             pass
     return jsonify({"doc_id": doc_id, "filename": filename})
 
+@app.get("/documents")
+def list_documents():
+    """
+    List all uploaded documents
+    ---
+    tags:
+      - docs
+    summary: Get list of all uploaded PDF documents
+    responses:
+      200:
+        description: List of documents
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              doc_id:
+                type: string
+              filename:
+                type: string
+              upload_date:
+                type: string
+              chunk_count:
+                type: integer
+    """
+    try:
+        from . import rag
+    except ImportError:
+        import rag
+    
+    docs = rag.list_documents()
+    return jsonify(docs)
+
+@app.delete("/documents/<doc_id>")
+def delete_document(doc_id: str):
+    """
+    Delete a document by ID
+    ---
+    tags:
+      - docs
+    summary: Delete a PDF document and its embeddings
+    parameters:
+      - name: doc_id
+        in: path
+        type: string
+        required: true
+        description: Document ID to delete
+    responses:
+      200:
+        description: Document deleted
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+            message:
+              type: string
+      404:
+        description: Document not found
+    """
+    try:
+        from . import rag
+    except ImportError:
+        import rag
+    
+    success = rag.delete_document(doc_id)
+    if success:
+        return jsonify({"success": True, "message": f"Document {doc_id} deleted successfully"})
+    else:
+        return jsonify({"success": False, "message": f"Failed to delete document {doc_id}"}), 404
+
+
 @app.post("/transcriptions")
 def save_transcription():
     """

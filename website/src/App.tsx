@@ -9,6 +9,7 @@ import SpaWellness from "./pages/SpaWellness";
 import FitnessCenter from "./pages/FitnessCenter";
 import ValetParking from "./pages/ValetParking";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 import BookingConfirmation from "./pages/BookingConfirmation";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/spa-wellness" element={<SpaWellness />} />
           <Route path="/fitness-center" element={<FitnessCenter />} />
           <Route path="/valet-parking" element={<ValetParking />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/bookingconfirmation" element={<BookingConfirmation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
